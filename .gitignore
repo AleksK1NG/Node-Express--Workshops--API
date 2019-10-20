@@ -52,3 +52,4 @@ yarn-error.log*
 /client/.idea
 /config/
 /config.env
+/config/config.env
