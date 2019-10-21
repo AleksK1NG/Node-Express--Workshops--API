@@ -1,7 +1,12 @@
 const express = require('express')
 const router = express.Router()
 
-const bootcampController = require('../controllers/bootcampController')
+const bootcampController = require('../controllers/bootCampController')
+const workShopsRouter = require('./workShops')
+
+
+// redirect requests to workShopController
+router.use('/:bootcampId/workshops', workShopsRouter)
 
 router
   .route('/')

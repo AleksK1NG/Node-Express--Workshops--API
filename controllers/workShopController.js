@@ -8,11 +8,10 @@ exports.getWorkShops = asyncMiddleware(async (req, res, next) => {
   let query
 
   if (req.params.bootcampId) {
-    query = Workshop.find({ bootcamp: req.params.bootcampId })
+    query = Workshop.find({ bootcamp: req.params.bootcampId }).populate('bootcamp')
   } else {
-    query = Workshop.find()
+    query = Workshop.find().populate('bootcamp')
   }
-
   const workShops = await query
 
   return res.status(200).json({ count: workShops.length, data: workShops })
