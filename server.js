@@ -21,6 +21,7 @@ connectDB()
 
 // Routes
 const bootcampRoutes = require('./routes/bootcamp')
+const workShopsRoutes = require('./routes/workShops')
 
 // Init Express
 const app = express()
@@ -60,6 +61,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // User Routes
 app.use('/api/v1/bootcamps', bootcampRoutes)
+app.use('/api/v1/workshops', workShopsRoutes)
 
 // Error middleware
 app.use(errorMiddleware)
