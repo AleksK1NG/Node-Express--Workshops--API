@@ -97,10 +97,11 @@ exports.updateBootCamp = asyncMiddleware(async (req, res, next) => {
 
 // @DELETE /api/v1/bootcamps/:id Private
 exports.deleteBootCamp = asyncMiddleware(async (req, res, next) => {
-  const bootCamp = await Bootcamp.findByIdAndDelete(req.params.id)
+  const bootCamp = await Bootcamp.findById(req.params.id)
 
   if (!bootCamp) return next(new ErrorResponse(`BootCamp with id ${req.params.id} not found `, 400))
 
+  await bootCamp.remove()
   res.status(200).json(bootCamp)
 })
 
