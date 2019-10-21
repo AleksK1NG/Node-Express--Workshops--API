@@ -22,7 +22,7 @@ exports.getAllBootCamps = asyncMiddleware(async (req, res) => {
   // Create operators ($gt, $gte, etc)
   queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`)
 
-  query = Bootcamp.find(JSON.parse(queryString))
+  query = Bootcamp.find(JSON.parse(queryString)).populate('workshops')
 
   // Add select BootCamp.find().select()
   if (req.query.select) {
