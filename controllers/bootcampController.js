@@ -1,9 +1,10 @@
 const Bootcamp = require('../models/Bootcamp')
 const ErrorResponse = require('../utils/errorsResponse')
 const asyncMiddleware = require('../middlewares/asyncMiddleware')
+const geocoder = require('../utils/geocoder')
 
 // @GET /api/v1/bootcamps public
-exports.getAllBootCamps = asyncMiddleware(async (req, res, next) => {
+exports.getAllBootCamps = asyncMiddleware(async (req, res) => {
   const bootCamps = await Bootcamp.find()
 
   res.status(200).json({ count: bootCamps.length, data: bootCamps })
@@ -43,4 +44,26 @@ exports.deleteBootCamp = asyncMiddleware(async (req, res, next) => {
   res.status(200).json(bootCamp)
 })
 
-// 6 add mongoose middlewares
+// @GET Get BootCamps with radius params, /api/v1/bootcamps/:zipcode/:distance
+exports.getBootCampsByRadius = asyncMiddleware(async (req, res) => {
+  const { zipcode, distance } = req.params
+
+  // Get lat/lng from geocoder
+  const loc = await geocoder.geocode(zipcode)
+  const lat = loc[0].latitude
+  const lng = loc[0].longitude
+
+  // Calc radius using radians
+  // Divide dist by radius of Earth
+  // Earth Radius = 3,963 mi / 6,378 km
+  const radius = distance / 3963
+
+  const bootcamps = await Bootcamp.find({
+    location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }
+  })
+
+  res.status(200).json({
+    count: bootcamps.length,
+    data: bootcamps
+  })
+})
