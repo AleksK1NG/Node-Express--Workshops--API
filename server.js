@@ -20,7 +20,7 @@ dotenv.config({ path: './config/config.env' })
 connectDB()
 
 // Routes
-const bootcampRoutes = require('./routes/bootcamp')
+const bootcampRoutes = require('./routes/bootCamp')
 const workShopsRoutes = require('./routes/workShops')
 
 // Init Express
