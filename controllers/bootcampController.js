@@ -5,7 +5,15 @@ const geocoder = require('../utils/geocoder')
 
 // @GET /api/v1/bootcamps public
 exports.getAllBootCamps = asyncMiddleware(async (req, res) => {
-  const bootCamps = await Bootcamp.find()
+  console.log('getAllBootCamps ', req.query)
+  let query
+
+  let queryString = JSON.stringify(req.query)
+  // Create operators ($gt, $gte, etc)
+  queryString = queryString.replace(/\b(gt|gte|lt|lte|in)\b/g, (match) => `$${match}`)
+  console.log('queryString => ', queryString)
+
+  const bootCamps = await Bootcamp.find(JSON.parse(queryString))
 
   res.status(200).json({ count: bootCamps.length, data: bootCamps })
 })
