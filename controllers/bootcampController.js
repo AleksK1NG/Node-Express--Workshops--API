@@ -42,3 +42,5 @@ exports.deleteBootCamp = asyncMiddleware(async (req, res, next) => {
 
   res.status(200).json(bootCamp)
 })
+
+// 6 add mongoose middlewares
