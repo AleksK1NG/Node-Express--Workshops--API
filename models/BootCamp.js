@@ -126,8 +126,8 @@ BootcampSchema.pre('save', async function(next) {
 // })
 
 // Reverse populate with virtuals
-BootcampSchema.virtual('courses', {
-  ref: 'Course',
+BootcampSchema.virtual('workshops', {
+  ref: 'Workshop',
   localField: '_id',
   foreignField: 'bootcamp',
   justOne: false

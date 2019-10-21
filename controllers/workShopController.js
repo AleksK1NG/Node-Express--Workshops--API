@@ -10,7 +10,10 @@ exports.getWorkShops = asyncMiddleware(async (req, res, next) => {
   if (req.params.bootcampId) {
     query = Workshop.find({ bootcamp: req.params.bootcampId }).populate('bootcamp')
   } else {
-    query = Workshop.find().populate('bootcamp')
+    query = Workshop.find().populate({
+      path: 'bootcamp',
+      select: 'name description'
+    })
   }
   const workShops = await query
 
