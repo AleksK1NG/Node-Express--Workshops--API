@@ -1,11 +1,12 @@
 const Bootcamp = require('../models/Bootcamp')
+const ErrorResponse = require('../utils/errorsResponse')
 
 // @GET /api/v1/bootcamps public
 exports.getAllBootCamps = async (req, res) => {
   try {
     const bootCamps = await Bootcamp.find()
 
-    res.status(200).json(bootCamps)
+    res.status(200).json({ count: bootCamps.length, data: bootCamps })
   } catch (error) {
     console.error(error)
     res.status(400).json({ message: 'Bad request' })
@@ -13,7 +14,7 @@ exports.getAllBootCamps = async (req, res) => {
 }
 
 // @GET /api/v1/bootcamps/:id public
-exports.getBootCampById = async (req, res) => {
+exports.getBootCampById = async (req, res, next) => {
   try {
     const bootCamp = await Bootcamp.findById(req.params.id)
 
@@ -22,7 +23,7 @@ exports.getBootCampById = async (req, res) => {
     res.status(200).json(bootCamp)
   } catch (error) {
     console.error(error)
-    res.status(400).json({ message: 'Bad request' })
+    next(error)
   }
 }
 

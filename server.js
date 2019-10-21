@@ -9,6 +9,7 @@ const hpp = require('hpp')
 const cors = require('cors')
 const morgan = require('morgan')
 const colors = require('colors')
+const errorMiddleware = require('./middlewares/error')
 
 const connectDB = require('./db/db')
 
@@ -59,6 +60,9 @@ if (process.env.NODE_ENV === 'development') {
 
 // User Routes
 app.use('/api/v1/bootcamps', bootcampRoutes)
+
+// Error middleware
+app.use(errorMiddleware)
 
 const PORT = process.env.PORT || 5000
 // Run Server
