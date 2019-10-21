@@ -32,3 +32,5 @@ const errorMiddleware = (err, req, res, next) => {
 }
 
 module.exports = errorMiddleware
+
+// http://www.acuriousanimal.com/2018/02/15/express-async-middleware.html
