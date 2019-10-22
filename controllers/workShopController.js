@@ -6,19 +6,11 @@ const ErrorsResponse = require('../utils/errorsResponse')
 // @ GET Get All WorkShops
 // Route: /api/v1/bootcamps && /api/v1/bootcamps/:bootcampId/workshops
 exports.getWorkShops = asyncMiddleware(async (req, res, next) => {
-  let query
-
   if (req.params.bootcampId) {
-    query = Workshop.find({ bootcamp: req.params.bootcampId }).populate('bootcamp')
-  } else {
-    query = Workshop.find().populate({
-      path: 'bootcamp',
-      select: 'name description'
-    })
+    const workShops = await Workshop.find({ bootcamp: req.params.bootcampId }).populate('bootcamp')
+    return res.status(200).json({ count: workShops.length, data: workShops })
   }
-  const workShops = await query
-
-  return res.status(200).json({ count: workShops.length, data: workShops })
+  res.status(200).json(res.results)
 })
 
 // @ GET Get WorkShop by Id

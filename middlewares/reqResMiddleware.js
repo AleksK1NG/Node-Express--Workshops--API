@@ -1,3 +1,7 @@
+// Request, Response middleware used for filters, sorting, pagination
+// Usage:  add to router before controller.handler
+// in controller.handler use res.results
+
 const reqResMiddleware = (model, populate) => async (req, res, next) => {
   let query
 
