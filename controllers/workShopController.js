@@ -1,4 +1,5 @@
 const Workshop = require('../models/Workshop')
+const BootCamp = require('../models/BootCamp')
 const asyncMiddleware = require('../middlewares/asyncMiddleware')
 const ErrorsResponse = require('../utils/errorsResponse')
 
@@ -33,3 +34,16 @@ exports.getWorkShopById = asyncMiddleware(async (req, res, next) => {
   return res.status(200).json({ data: workShop })
 })
 
+// @ POST Create WorkShop by Id Private
+// Route: /api/v1/workshops && /api/v1/bootcamps/:bootcampId/workshops
+exports.createWorkShop = asyncMiddleware(async (req, res, next) => {
+  req.body.bootcamp = req.params.bootcampId
+
+  const bootCamp = await BootCamp.findById(req.params.bootcampId)
+
+  if (!bootCamp) return next(new ErrorsResponse(`Bad request, wrong bootCamp id ${req.params.bootcampId}`, 404))
+
+  const workShop = await Workshop.create(req.body)
+
+  res.status(201).json(workShop)
+})
