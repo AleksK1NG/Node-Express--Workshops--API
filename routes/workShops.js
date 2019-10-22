@@ -12,5 +12,6 @@ router
   .route('/:id')
   .get(workShopController.getWorkShopById)
   .put(workShopController.updateWorkShop)
+  .delete(workShopController.deleteWorkShop)
 
 module.exports = router

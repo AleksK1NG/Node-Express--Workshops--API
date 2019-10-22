@@ -59,3 +59,15 @@ exports.updateWorkShop = asyncMiddleware(async (req, res, next) => {
 
   res.status(200).json(workShop)
 })
+
+// @ DELETE Delete WorkShop by Id Private
+// Route: /api/v1/workshops/:id
+exports.deleteWorkShop = asyncMiddleware(async (req, res, next) => {
+  const workShop = await Workshop.findById(req.params.id)
+
+  if (!workShop) return next(new ErrorsResponse(`Bad request, wrong workShop id ${req.params.id}`, 404))
+
+  data = await workShop.remove()
+  console.log(data)
+  res.status(200).json(data)
+})
