@@ -1,5 +1,6 @@
 const dotenv = require('dotenv')
 const express = require('express')
+const path = require('path')
 const cookieParser = require('cookie-parser')
 const mongoSanitize = require('express-mongo-sanitize')
 const helmet = require('helmet')
@@ -10,7 +11,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 const colors = require('colors')
 const errorMiddleware = require('./middlewares/error')
-
+const fileupload = require('express-fileupload')
 const connectDB = require('./db/db')
 
 // Load .env files
@@ -31,6 +32,14 @@ app.use(express.json())
 
 // Cookie parser
 app.use(cookieParser())
+
+// File uploading
+app.use(fileupload())
+
+// Dev logging middleware
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'))
+}
 
 // Sanitize data
 app.use(mongoSanitize())
@@ -54,10 +63,8 @@ app.use(hpp())
 // Enable CORS
 app.use(cors())
 
-// Dev logging middleware
-if (process.env.NODE_ENV === 'development') {
-  app.use(morgan('dev'))
-}
+// Set static folder
+app.use(express.static(path.join(__dirname, 'public')))
 
 // User Routes
 app.use('/api/v1/bootcamps', bootcampRoutes)
