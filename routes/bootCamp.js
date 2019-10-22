@@ -1,6 +1,9 @@
 const express = require('express')
 const router = express.Router()
 
+const reqResMiddleware = require('../middlewares/reqResMiddleware')
+const BootCamp = require('../models/BootCamp')
+
 const bootcampController = require('../controllers/bootCampController')
 const workShopsRouter = require('./workShops')
 
@@ -9,7 +12,14 @@ router.use('/:bootcampId/workshops', workShopsRouter)
 
 router
   .route('/')
-  .get(bootcampController.getAllBootCamps)
+  // .get(reqResMiddleware(BootCamp, 'workshops'), bootcampController.getAllBootCamps)
+  .get(
+    reqResMiddleware(BootCamp, {
+      path: 'workshops',
+      select: 'title'
+    }),
+    bootcampController.getAllBootCamps
+  )
   .post(bootcampController.createBootCamp)
 
 router
