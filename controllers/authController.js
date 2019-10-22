@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const ErrorResponse = require('../utils/errorsResponse')
 const asyncMiddleware = require('../middlewares/asyncMiddleware')
+const tokenResponse = require('../utils/tokenResponse')
 
 // @POST Register user
 // Route: /api/v1/auth/register
@@ -19,10 +20,7 @@ exports.registerUser = asyncMiddleware(async (req, res, next) => {
     role
   })
 
-  // Create token
-  const token = user.getSignedJwtToken()
-
-  res.status(200).json({ token, data: user })
+  tokenResponse(user, 200, res)
 })
 
 // @POST Login user
@@ -42,8 +40,5 @@ exports.loginUser = asyncMiddleware(async (req, res, next) => {
   const isMatch = await user.matchPassword(password)
   if (!isMatch) return next(new ErrorResponse('Invalid email or password', 400))
 
-  // Create token
-  const token = user.getSignedJwtToken()
-
-  res.status(200).json({ token, data: user })
+  tokenResponse(user, 200, res)
 })
