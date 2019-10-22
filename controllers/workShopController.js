@@ -19,3 +19,17 @@ exports.getWorkShops = asyncMiddleware(async (req, res, next) => {
 
   return res.status(200).json({ count: workShops.length, data: workShops })
 })
+
+// @ GET Get WorkShop by Id
+// Route: /api/v1/workshops
+exports.getWorkShopById = asyncMiddleware(async (req, res, next) => {
+  const workShop = await Workshop.findById(req.params.id).populate({
+    path: 'bootcamp',
+    select: 'name description'
+  })
+
+  if (!workShop) return next(new ErrorsResponse(`Bad request, wrong workShop id ${req.params.id}`, 404))
+
+  return res.status(200).json({ data: workShop })
+})
+
