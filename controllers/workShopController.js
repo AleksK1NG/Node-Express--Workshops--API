@@ -47,3 +47,15 @@ exports.createWorkShop = asyncMiddleware(async (req, res, next) => {
 
   res.status(201).json(workShop)
 })
+
+// @ PUT Update WorkShop by Id Private
+// Route: /api/v1/workshops/:id
+exports.updateWorkShop = asyncMiddleware(async (req, res, next) => {
+  let workShop = await Workshop.findById(req.params.id)
+
+  if (!workShop) return next(new ErrorsResponse(`Bad request, wrong workShop id ${req.params.id}`, 404))
+
+  workShop = await Workshop.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+
+  res.status(200).json(workShop)
+})

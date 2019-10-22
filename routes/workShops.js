@@ -8,6 +8,9 @@ router
   .get(workShopController.getWorkShops)
   .post(workShopController.createWorkShop)
 
-router.route('/:id').get(workShopController.getWorkShopById)
+router
+  .route('/:id')
+  .get(workShopController.getWorkShopById)
+  .put(workShopController.updateWorkShop)
 
 module.exports = router
