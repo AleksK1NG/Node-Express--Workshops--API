@@ -128,3 +128,5 @@ exports.getBootCampsByRadius = asyncMiddleware(async (req, res) => {
     data: bootcamps
   })
 })
+
+// 8 ready
