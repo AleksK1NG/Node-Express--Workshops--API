@@ -6,7 +6,8 @@ const path = require('path')
 
 // @GET /api/v1/bootcamps public
 exports.getAllBootCamps = asyncMiddleware(async (req, res) => {
-
+  // res.results comes from reqResMiddleware
+  res.status(200).json(res.results)
 })
 
 // @GET /api/v1/bootcamps/:id public
