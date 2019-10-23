@@ -5,7 +5,7 @@ const tokenResponse = require('../utils/tokenResponse')
 const sendEmail = require('../utils/sendEmail')
 const crypto = require('crypto')
 
-// @POST Register user
+// @POST Register user | Public
 // Route: /api/v1/auth/register
 exports.registerUser = asyncMiddleware(async (req, res, next) => {
   const { email, password, role, name } = req.body
@@ -25,7 +25,7 @@ exports.registerUser = asyncMiddleware(async (req, res, next) => {
   tokenResponse(user, 200, res)
 })
 
-// @POST Login user
+// @POST Login user | Public
 // Route: /api/v1/auth/register
 exports.loginUser = asyncMiddleware(async (req, res, next) => {
   const { email, password } = req.body
@@ -45,15 +45,15 @@ exports.loginUser = asyncMiddleware(async (req, res, next) => {
   tokenResponse(user, 200, res)
 })
 
-// @GET Get current logged in user
+// @GET Get current logged in user | Private
 // Route: /api/v1/auth/me
 exports.getCurrentUser = asyncMiddleware(async (req, res, next) => {
   if (!req.user) return next(new ErrorResponse('Invalid credentials', 401))
   res.status(200).json(req.user)
 })
 
-// @POST Forgot Password
-// Route: /api/v1/auth/forgotpassword @Public
+// @POST Forgot Password | Public
+// Route: /api/v1/auth/forgotpassword
 exports.forgotPassword = asyncMiddleware(async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email })
 
@@ -92,7 +92,7 @@ exports.forgotPassword = asyncMiddleware(async (req, res, next) => {
   res.status(200).json({ message: 'Success', data: user })
 })
 
-// @PUT Reset password
+// @PUT Reset password | Public
 // Route: /api/v1/auth/resetpassword/:resettoken
 exports.resetPassword = asyncMiddleware(async (req, res, next) => {
   // Get hashed token
@@ -135,7 +135,7 @@ exports.updateUserData = asyncMiddleware(async (req, res, next) => {
   res.status(200).json(user)
 })
 
-// @PUT Update Password
+// @PUT Update Password | Private
 // Route: /api/v1/auth/updatepassword
 exports.updatePassword = asyncMiddleware(async (req, res, next) => {
   // Get user with password
