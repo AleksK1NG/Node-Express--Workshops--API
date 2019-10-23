@@ -7,5 +7,6 @@ router.post('/register', authController.registerUser)
 router.post('/login', authController.loginUser)
 router.post('/forgotpassword', authController.forgotPassword)
 router.get('/me', auth.authMiddleware, authController.getCurrentUser)
+router.put('/resetpassword/:resettoken', authController.resetPassword)
 
 module.exports = router
