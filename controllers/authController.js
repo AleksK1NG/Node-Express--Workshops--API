@@ -49,3 +49,21 @@ exports.getCurrentUser = asyncMiddleware(async (req, res, next) => {
   if (!req.user) return next(new ErrorResponse('Invalid credentials', 401))
   res.status(200).json(req.user)
 })
+
+// @POST Forgot Password
+// Route: /api/v1/auth/forgotpassword @Public
+exports.forgotPassword = asyncMiddleware(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email })
+
+  // Check exists
+  if (!user) return next(new ErrorResponse('Invalid email', 404))
+
+  // Get reset token
+  const resetToken = user.getResetPasswordToken()
+
+  console.log('Reset token ', resetToken)
+
+  await user.save({ validateBeforeSave: false })
+
+  res.status(200).json({ token: resetToken, data: user })
+})
