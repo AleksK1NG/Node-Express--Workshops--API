@@ -30,11 +30,18 @@ exports.getWorkShopById = asyncMiddleware(async (req, res, next) => {
 // Route: /api/v1/workshops && /api/v1/bootcamps/:bootcampId/workshops
 exports.createWorkShop = asyncMiddleware(async (req, res, next) => {
   req.body.bootcamp = req.params.bootcampId
+  req.body.user = req.user.id
 
+  // Check bootCamp exists
   const bootCamp = await BootCamp.findById(req.params.bootcampId)
 
   if (!bootCamp) return next(new ErrorsResponse(`Bad request, wrong bootCamp id ${req.params.bootcampId}`, 404))
 
+  // Check user is owner
+  if (bootCamp.user.toString() !== req.user.id && req.user.role !== 'admin')
+    return next(new ErrorResponse(`User ${req.params.id} is not authorized to update this bootcamp`, 401))
+
+  // Create workShop
   const workShop = await Workshop.create(req.body)
 
   res.status(201).json(workShop)
@@ -46,6 +53,10 @@ exports.updateWorkShop = asyncMiddleware(async (req, res, next) => {
   let workShop = await Workshop.findById(req.params.id)
 
   if (!workShop) return next(new ErrorsResponse(`Bad request, wrong workShop id ${req.params.id}`, 404))
+
+  // Check user is owner
+  if (workShop.user.toString() !== req.user.id && req.user.role !== 'admin')
+    return next(new ErrorResponse(`User ${req.params.id} is not authorized to update this workshop`, 401))
 
   workShop = await Workshop.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
 
@@ -59,7 +70,11 @@ exports.deleteWorkShop = asyncMiddleware(async (req, res, next) => {
 
   if (!workShop) return next(new ErrorsResponse(`Bad request, wrong workShop id ${req.params.id}`, 404))
 
-  data = await workShop.remove()
-  console.log(data)
-  res.status(200).json(data)
+  // Check user is owner
+  if (workShop.user.toString() !== req.user.id && req.user.role !== 'admin')
+    return next(new ErrorsResponse(`User ${req.params.id} is not authorized to delete this workshop`, 401))
+
+  const deletedWorkShop = await workShop.remove()
+
+  res.status(200).json(deletedWorkShop)
 })

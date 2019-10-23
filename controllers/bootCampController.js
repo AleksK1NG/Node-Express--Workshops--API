@@ -1,5 +1,5 @@
 const Bootcamp = require('../models/BootCamp')
-const ErrorResponse = require('../utils/errorsResponse')
+const ErrorsResponse = require('../utils/errorsResponse')
 const asyncMiddleware = require('../middlewares/asyncMiddleware')
 const geocoder = require('../utils/geocoder')
 const path = require('path')
@@ -14,7 +14,7 @@ exports.getAllBootCamps = asyncMiddleware(async (req, res) => {
 exports.getBootCampById = asyncMiddleware(async (req, res, next) => {
   const bootCamp = await Bootcamp.findById(req.params.id)
 
-  if (!bootCamp) return next(new ErrorResponse(`BootCamp with id ${req.params.id} not found `, 404))
+  if (!bootCamp) return next(new ErrorsResponse(`BootCamp with id ${req.params.id} not found `, 404))
 
   res.status(200).json(bootCamp)
 })
@@ -28,7 +28,7 @@ exports.createBootCamp = asyncMiddleware(async (req, res, next) => {
   const createdBootCamp = await Bootcamp.findOne({ user: req.user.id })
 
   if (createdBootCamp && req.user.role !== 'admin')
-    return next(new ErrorResponse(`The user with ID ${req.user.id} has already published a bootcamp`, 400))
+    return next(new ErrorsResponse(`The user with ID ${req.user.id} has already published a bootcamp`, 400))
 
   // Create new bootCamp
   const bootCamp = await Bootcamp.create(req.body)
@@ -41,11 +41,11 @@ exports.updateBootCamp = asyncMiddleware(async (req, res, next) => {
   let bootCamp = await Bootcamp.findById(req.params.id)
 
   // Check bootCam is exists
-  if (!bootCamp) return next(new ErrorResponse(`BootCamp with id ${req.params.id} not found `, 404))
+  if (!bootCamp) return next(new ErrorsResponse(`BootCamp with id ${req.params.id} not found `, 404))
 
   // Check user is owner
   if (bootCamp.user.toString() !== req.user.id && req.user.role !== 'admin')
-    return next(new ErrorResponse(`User ${req.params.id} is not authorized to update this bootcamp`, 401))
+    return next(new ErrorsResponse(`User ${req.params.id} is not authorized to update this bootcamp`, 401))
 
   // Update bootCamp
   bootCamp = await Bootcamp.findOneAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
@@ -57,7 +57,7 @@ exports.updateBootCamp = asyncMiddleware(async (req, res, next) => {
 exports.deleteBootCamp = asyncMiddleware(async (req, res, next) => {
   const bootCamp = await Bootcamp.findById(req.params.id)
 
-  if (!bootCamp) return next(new ErrorResponse(`BootCamp with id ${req.params.id} not found `, 404))
+  if (!bootCamp) return next(new ErrorsResponse(`BootCamp with id ${req.params.id} not found `, 404))
 
   // Check user is owner
   if (bootCamp.user.toString() !== req.user.id && req.user.role !== 'admin')
@@ -97,8 +97,8 @@ exports.getBootCampsByRadius = asyncMiddleware(async (req, res) => {
 exports.uploadBootCampPhoto = asyncMiddleware(async (req, res, next) => {
   const bootCamp = await Bootcamp.findById(req.params.id)
 
-  if (!bootCamp) return next(new ErrorResponse(`BootCamp with id ${req.params.id} not found `, 404))
-  if (!req.files) return next(new ErrorResponse(`Please upload some file`, 400))
+  if (!bootCamp) return next(new ErrorsResponse(`BootCamp with id ${req.params.id} not found `, 404))
+  if (!req.files) return next(new ErrorsResponse(`Please upload some file`, 400))
 
   const file = req.files.file
 
@@ -107,7 +107,7 @@ exports.uploadBootCampPhoto = asyncMiddleware(async (req, res, next) => {
 
   // Check file size
   if (file.size > process.env.MAX_FILE_UPLOAD)
-    return next(new ErrorResponse(`Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`, 400))
+    return next(new ErrorsResponse(`Please upload an image less than ${process.env.MAX_FILE_UPLOAD}`, 400))
 
   // Create custom file name for prevent names collisions, path.parse().ext for get *.extension name
   file.name = `photo_${bootCamp._id}${path.parse(file.name).ext}`
@@ -116,7 +116,7 @@ exports.uploadBootCampPhoto = asyncMiddleware(async (req, res, next) => {
   file.mv(`${process.env.FILE_UPLOAD_PATH}/${file.name}`, async (error) => {
     if (error) {
       console.error(error)
-      return next(new ErrorResponse(`Problem with file upload`, 500))
+      return next(new ErrorsResponse(`Problem with file upload`, 500))
     }
 
     const bootCamp = await Bootcamp.findByIdAndUpdate(req.params.id, { photo: file.name }, { new: true })
