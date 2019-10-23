@@ -4,13 +4,15 @@ const asyncMiddleware = require('../middlewares/asyncMiddleware')
 const geocoder = require('../utils/geocoder')
 const path = require('path')
 
-// @GET /api/v1/bootcamps public
+// @GET Get all bootCamps | Public
+// api/v1/bootcamps
 exports.getAllBootCamps = asyncMiddleware(async (req, res) => {
   // res.results comes from reqResMiddleware
   res.status(200).json(res.results)
 })
 
-// @GET /api/v1/bootcamps/:id public
+// @GET Get bootCamp by id | Public
+// /api/v1/bootcamps/:id
 exports.getBootCampById = asyncMiddleware(async (req, res, next) => {
   const bootCamp = await Bootcamp.findById(req.params.id)
 
@@ -19,7 +21,8 @@ exports.getBootCampById = asyncMiddleware(async (req, res, next) => {
   res.status(200).json(bootCamp)
 })
 
-// @POST /api/v1/bootcamps Private
+// @POST Create bootcamp | Private
+// /api/v1/bootcamps
 exports.createBootCamp = asyncMiddleware(async (req, res, next) => {
   // Add user to request body
   req.body.user = req.user.id
@@ -36,7 +39,8 @@ exports.createBootCamp = asyncMiddleware(async (req, res, next) => {
   res.status(201).json(bootCamp)
 })
 
-// @PUT /api/v1/bootcamps/:id Private
+// @PUT Update bootcamp | Private
+// /api/v1/bootcamps/:id
 exports.updateBootCamp = asyncMiddleware(async (req, res, next) => {
   let bootCamp = await Bootcamp.findById(req.params.id)
 
@@ -53,7 +57,8 @@ exports.updateBootCamp = asyncMiddleware(async (req, res, next) => {
   res.status(200).json(bootCamp)
 })
 
-// @DELETE /api/v1/bootcamps/:id Private
+// @DELETE Delete bootcamp | Private
+// /api/v1/bootcamps/:id
 exports.deleteBootCamp = asyncMiddleware(async (req, res, next) => {
   const bootCamp = await Bootcamp.findById(req.params.id)
 
@@ -67,7 +72,7 @@ exports.deleteBootCamp = asyncMiddleware(async (req, res, next) => {
   res.status(200).json(bootCamp)
 })
 
-// @GET Get BootCamps with radius params,
+// @GET Get BootCamps with radius params | Public
 // Route: /api/v1/bootcamps/:zipcode/:distance
 exports.getBootCampsByRadius = asyncMiddleware(async (req, res) => {
   const { zipcode, distance } = req.params
@@ -92,7 +97,7 @@ exports.getBootCampsByRadius = asyncMiddleware(async (req, res) => {
   })
 })
 
-// @PUT Upload photo
+// @PUT Upload photo | Public
 // Route: /api/v1/bootcamps/:bootcampId/photo
 exports.uploadBootCampPhoto = asyncMiddleware(async (req, res, next) => {
   const bootCamp = await Bootcamp.findById(req.params.id)
