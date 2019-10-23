@@ -24,6 +24,7 @@ connectDB()
 const bootcampRoutes = require('./routes/bootCamp')
 const workShopsRoutes = require('./routes/workShops')
 const authRoutes = require('./routes/auth')
+const usersRoutes = require('./routes/user')
 
 // Init Express
 const app = express()
@@ -71,6 +72,7 @@ app.use(express.static(path.join(__dirname, 'public')))
 app.use('/api/v1/bootcamps', bootcampRoutes)
 app.use('/api/v1/workshops', workShopsRoutes)
 app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/users', usersRoutes)
 
 // Error middleware
 app.use(errorMiddleware)
