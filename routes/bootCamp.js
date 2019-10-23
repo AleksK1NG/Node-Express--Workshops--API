@@ -2,6 +2,7 @@ const express = require('express')
 const router = express.Router()
 
 const reqResMiddleware = require('../middlewares/reqResMiddleware')
+const auth = require('../middlewares/authMiddleware')
 const BootCamp = require('../models/BootCamp')
 
 const bootcampController = require('../controllers/bootCampController')
@@ -20,16 +21,16 @@ router
     }),
     bootcampController.getAllBootCamps
   )
-  .post(bootcampController.createBootCamp)
+  .post(auth.authMiddleware, bootcampController.createBootCamp)
 
 router
   .route('/:id')
-  .put(bootcampController.updateBootCamp)
+  .put(auth.authMiddleware, bootcampController.updateBootCamp)
   .get(bootcampController.getBootCampById)
-  .delete(bootcampController.deleteBootCamp)
+  .delete(auth.authMiddleware, bootcampController.deleteBootCamp)
 
 router.route('/radius/:zipcode/:distance').get(bootcampController.getBootCampsByRadius)
 
-router.route('/:id/photo').put(bootcampController.uploadBootCampPhoto)
+router.route('/:id/photo').put(auth.authMiddleware, bootcampController.uploadBootCampPhoto)
 
 module.exports = router

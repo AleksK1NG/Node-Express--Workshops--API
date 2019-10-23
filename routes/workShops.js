@@ -2,8 +2,9 @@ const express = require('express')
 const router = express.Router({ mergeParams: true })
 
 const reqResMiddleware = require('../middlewares/reqResMiddleware')
-const Workshop = require('../models/Workshop')
+const auth = require('../middlewares/authMiddleware')
 
+const Workshop = require('../models/Workshop')
 const workShopController = require('../controllers/workShopController')
 
 router
@@ -15,12 +16,13 @@ router
     }),
     workShopController.getWorkShops
   )
-  .post(workShopController.createWorkShop)
+  .post(auth.authMiddleware, workShopController.createWorkShop)
 
 router
   .route('/:id')
   .get(workShopController.getWorkShopById)
-  .put(workShopController.updateWorkShop)
-  .delete(workShopController.deleteWorkShop)
+  .put(auth.authMiddleware, workShopController.updateWorkShop)
+  .delete(auth.authMiddleware, workShopController.deleteWorkShop)
 
 module.exports = router
+
