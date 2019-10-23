@@ -23,10 +23,6 @@ const WorkshopSchema = new mongoose.Schema({
     required: [true, 'Please add a minimum skill'],
     enum: ['beginner', 'intermediate', 'advanced']
   },
-  scholarshipAvailable: {
-    type: Boolean,
-    default: false
-  },
   createdAt: {
     type: Date,
     default: Date.now

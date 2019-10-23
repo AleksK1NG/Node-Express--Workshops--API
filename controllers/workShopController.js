@@ -56,7 +56,7 @@ exports.updateWorkShop = asyncMiddleware(async (req, res, next) => {
 
   // Check user is owner
   if (workShop.user.toString() !== req.user.id && req.user.role !== 'admin')
-    return next(new ErrorResponse(`User ${req.params.id} is not authorized to update this workshop`, 401))
+    return next(new ErrorsResponse(`User ${req.params.id} is not authorized to update this workshop`, 401))
 
   workShop = await Workshop.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
 

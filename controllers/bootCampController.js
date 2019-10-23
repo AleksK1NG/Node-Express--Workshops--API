@@ -61,7 +61,7 @@ exports.deleteBootCamp = asyncMiddleware(async (req, res, next) => {
 
   // Check user is owner
   if (bootCamp.user.toString() !== req.user.id && req.user.role !== 'admin')
-    return next(new ErrorResponse(`User ${req.params.id} is not authorized to update this bootcamp`, 401))
+    return next(new ErrorsResponse(`User ${req.params.id} is not authorized to update this bootcamp`, 401))
 
   await bootCamp.remove()
   res.status(200).json(bootCamp)
