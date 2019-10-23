@@ -20,7 +20,7 @@ exports.authMiddleware = asyncMiddleware(async (req, res, next) => {
     // Verify token
     const decodedToken = JWT.verify(token, process.env.JWT_SECRET)
 
-    console.log('decodedToken ', decodedToken)
+
     // Find user by id decoded from token
     req.user = await User.findById(decodedToken.id)
 
