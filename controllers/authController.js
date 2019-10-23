@@ -3,6 +3,7 @@ const ErrorResponse = require('../utils/errorsResponse')
 const asyncMiddleware = require('../middlewares/asyncMiddleware')
 const tokenResponse = require('../utils/tokenResponse')
 const sendEmail = require('../utils/sendEmail')
+const crypto = require('crypto')
 
 // @POST Register user
 // Route: /api/v1/auth/register
@@ -45,7 +46,7 @@ exports.loginUser = asyncMiddleware(async (req, res, next) => {
 })
 
 // @GET Get current logged in user
-// Route: /api/v1/auth/register
+// Route: /api/v1/auth/me
 exports.getCurrentUser = asyncMiddleware(async (req, res, next) => {
   if (!req.user) return next(new ErrorResponse('Invalid credentials', 401))
   res.status(200).json(req.user)
@@ -65,7 +66,7 @@ exports.forgotPassword = asyncMiddleware(async (req, res, next) => {
   await user.save({ validateBeforeSave: false })
 
   // Create reset url
-  const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/resetpassword/${resetToken}`
+  const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/auth/resetpassword/${resetToken}`
 
   // Create message
   const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`
@@ -89,4 +90,29 @@ exports.forgotPassword = asyncMiddleware(async (req, res, next) => {
   }
 
   res.status(200).json({ message: 'Success', data: user })
+})
+
+// @PUT Reset password
+// Route: /api/v1/auth/resetpassword/:resettoken
+exports.resetPassword = asyncMiddleware(async (req, res, next) => {
+  // Get hashed token
+  const resetPasswordToken = crypto
+    .createHash('sha256')
+    .update(req.params.resettoken)
+    .digest('hex')
+
+  // Find user by resetPasswordToken and not expired
+  const user = await User.findOne({ resetPasswordToken, resetPasswordExpire: { $gt: Date.now() } })
+
+  if (!user) return next(new ErrorResponse('Invalid token', 400))
+
+  // Set new password
+  user.password = req.body.password
+  user.resetPasswordToken = undefined
+  user.resetPasswordExpire = undefined
+
+  // Save user
+  await user.save()
+
+  tokenResponse(user, 200, res)
 })
