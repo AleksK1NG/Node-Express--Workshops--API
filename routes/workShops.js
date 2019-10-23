@@ -16,13 +16,12 @@ router
     }),
     workShopController.getWorkShops
   )
-  .post(auth.authMiddleware, workShopController.createWorkShop)
+  .post(auth.authMiddleware, auth.roleAuthMiddleware('admin', 'publisher'), workShopController.createWorkShop)
 
 router
   .route('/:id')
   .get(workShopController.getWorkShopById)
-  .put(auth.authMiddleware, workShopController.updateWorkShop)
-  .delete(auth.authMiddleware, workShopController.deleteWorkShop)
+  .put(auth.authMiddleware, auth.roleAuthMiddleware('admin', 'publisher'), workShopController.updateWorkShop)
+  .delete(auth.authMiddleware, auth.roleAuthMiddleware('admin', 'publisher'), workShopController.deleteWorkShop)
 
 module.exports = router
-
