@@ -20,7 +20,6 @@ exports.authMiddleware = asyncMiddleware(async (req, res, next) => {
     // Verify token
     const decodedToken = JWT.verify(token, process.env.JWT_SECRET)
 
-
     // Find user by id decoded from token
     req.user = await User.findById(decodedToken.id)
 
@@ -30,3 +29,10 @@ exports.authMiddleware = asyncMiddleware(async (req, res, next) => {
     next(new ErrorResponse('Not authorized', 401))
   }
 })
+
+// Role authentication
+exports.roleAuthMiddleware = (...roles) => (req, res, next) => {
+  if (!roles.includes(req.user.role))
+    return next(new ErrorResponse(`User role ${req.user.role} is not authorized to access this route`, 403))
+  next()
+}
