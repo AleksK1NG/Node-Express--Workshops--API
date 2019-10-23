@@ -42,3 +42,10 @@ exports.loginUser = asyncMiddleware(async (req, res, next) => {
 
   tokenResponse(user, 200, res)
 })
+
+// @GET Get current logged in user
+// Route: /api/v1/auth/register
+exports.getCurrentUser = asyncMiddleware(async (req, res, next) => {
+  if (!req.user) return next(new ErrorResponse('Invalid credentials', 401))
+  res.status(200).json(req.user)
+})
