@@ -21,16 +21,16 @@ router
     }),
     bootcampController.getAllBootCamps
   )
-  .post(auth.authMiddleware, bootcampController.createBootCamp)
+  .post(auth.authMiddleware, auth.roleAuthMiddleware('admin', 'publisher'), bootcampController.createBootCamp)
 
 router
   .route('/:id')
-  .put(auth.authMiddleware, bootcampController.updateBootCamp)
+  .put(auth.authMiddleware, auth.roleAuthMiddleware('admin', 'publisher'), bootcampController.updateBootCamp)
   .get(bootcampController.getBootCampById)
-  .delete(auth.authMiddleware, bootcampController.deleteBootCamp)
+  .delete(auth.authMiddleware, auth.roleAuthMiddleware('admin', 'publisher'), bootcampController.deleteBootCamp)
 
 router.route('/radius/:zipcode/:distance').get(bootcampController.getBootCampsByRadius)
 
-router.route('/:id/photo').put(auth.authMiddleware, bootcampController.uploadBootCampPhoto)
+router.route('/:id/photo').put(auth.authMiddleware, auth.roleAuthMiddleware('admin', 'publisher'), bootcampController.uploadBootCampPhoto)
 
 module.exports = router
