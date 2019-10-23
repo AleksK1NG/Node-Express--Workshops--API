@@ -116,3 +116,22 @@ exports.resetPassword = asyncMiddleware(async (req, res, next) => {
 
   tokenResponse(user, 200, res)
 })
+
+// @PUT Update user | Private
+// Route: /api/v1/auth/me
+exports.updateUserData = asyncMiddleware(async (req, res, next) => {
+  const fieldsToUpdate = {
+    email: req.body.email,
+    name: req.body.name
+  }
+
+  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+    new: true,
+    runValidators: true
+  })
+
+  if (!user) return next(new ErrorResponse('Invalid credentials', 401))
+
+  res.status(200).json(user)
+})
+
