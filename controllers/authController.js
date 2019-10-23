@@ -118,7 +118,7 @@ exports.resetPassword = asyncMiddleware(async (req, res, next) => {
 })
 
 // @PUT Update user | Private
-// Route: /api/v1/auth/me
+// Route: /api/v1/auth/updatedata
 exports.updateUserData = asyncMiddleware(async (req, res, next) => {
   const fieldsToUpdate = {
     email: req.body.email,
@@ -135,3 +135,22 @@ exports.updateUserData = asyncMiddleware(async (req, res, next) => {
   res.status(200).json(user)
 })
 
+// @PUT Update Password
+// Route: /api/v1/auth/updatepassword
+exports.updatePassword = asyncMiddleware(async (req, res, next) => {
+  // Get user with password
+  const user = await User.findById(req.user.id).select('+password')
+
+  if (!user) return next(new ErrorResponse('Invalid credentials', 401))
+
+  // Check match password
+  const isMatch = await user.matchPassword(req.body.currentPassword)
+  if (!isMatch) return next(new ErrorResponse('Invalid password', 401))
+
+  // set user new password
+  user.password = req.body.newPassword
+  await user.save()
+
+  // response with new user and token
+  tokenResponse(user, 200, res)
+})
