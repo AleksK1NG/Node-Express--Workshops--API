@@ -18,7 +18,7 @@ exports.getBootCampById = asyncMiddleware(async (req, res, next) => {
 
   if (!bootCamp) return next(new ErrorsResponse(`BootCamp with id ${req.params.id} not found `, 404))
 
-  res.status(200).json(bootCamp)
+  res.status(200).json({ data: bootCamp })
 })
 
 // @POST Create bootcamp | Private
@@ -36,7 +36,7 @@ exports.createBootCamp = asyncMiddleware(async (req, res, next) => {
   // Create new bootCamp
   const bootCamp = await Bootcamp.create(req.body)
 
-  res.status(201).json(bootCamp)
+  res.status(201).json({ data: bootCamp })
 })
 
 // @PUT Update bootcamp | Private
@@ -54,7 +54,7 @@ exports.updateBootCamp = asyncMiddleware(async (req, res, next) => {
   // Update bootCamp
   bootCamp = await Bootcamp.findOneAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
 
-  res.status(200).json(bootCamp)
+  res.status(200).json({ data: bootCamp })
 })
 
 // @DELETE Delete bootcamp | Private
@@ -69,7 +69,7 @@ exports.deleteBootCamp = asyncMiddleware(async (req, res, next) => {
     return next(new ErrorsResponse(`User ${req.params.id} is not authorized to update this bootcamp`, 401))
 
   await bootCamp.remove()
-  res.status(200).json(bootCamp)
+  res.status(200).json({ data: bootCamp })
 })
 
 // @GET Get BootCamps with radius params | Public

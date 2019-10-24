@@ -44,7 +44,7 @@ exports.createWorkShop = asyncMiddleware(async (req, res, next) => {
   // Create workShop
   const workShop = await Workshop.create(req.body)
 
-  res.status(201).json(workShop)
+  res.status(201).json({ data: workShop })
 })
 
 // @ PUT Update WorkShop | Private
@@ -60,7 +60,7 @@ exports.updateWorkShop = asyncMiddleware(async (req, res, next) => {
 
   workShop = await Workshop.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
 
-  res.status(200).json(workShop)
+  res.status(200).json({ data: workShop })
 })
 
 // @ DELETE Delete WorkShop | Private
@@ -74,7 +74,7 @@ exports.deleteWorkShop = asyncMiddleware(async (req, res, next) => {
   if (workShop.user.toString() !== req.user.id && req.user.role !== 'admin')
     return next(new ErrorsResponse(`User ${req.params.id} is not authorized to delete this workshop`, 401))
 
-  const deletedWorkShop = await workShop.remove()
+  await workShop.remove()
 
-  res.status(200).json(deletedWorkShop)
+  res.status(200).json({ message: 'WorkShop deleted', data: {} })
 })
