@@ -23,5 +23,6 @@ router
   .route('/:id')
   .get(reviewsController.getReviewById)
   .put(auth.authMiddleware, auth.roleAuthMiddleware('user', 'admin'), reviewsController.updateReview)
+  .delete(auth.authMiddleware, auth.roleAuthMiddleware('user', 'admin'), reviewsController.deleteReview)
 
 module.exports = router
