@@ -59,3 +59,19 @@ exports.updateReview = asyncMiddleware(async (req, res, next) => {
 
   res.status(201).json(review)
 })
+
+// @DELETE Delete review | Private
+// Route: /api/v1/reviews/:id
+exports.deleteReview = asyncMiddleware(async (req, res, next) => {
+  const review = await Review.findById(req.params.id)
+
+  if (!review) return next(new ErrorsResponse(`Review with id ${req.params.id} not found `, 404))
+
+  // Check user is creator or admin
+  if (review.user.toString() !== req.user.id && req.user.role !== 'admin')
+    return next(new ErrorsResponse(`Not authorized`, 401))
+
+  await Review.remove()
+
+  res.status(201).json({ message: 'Review deleted' })
+})
