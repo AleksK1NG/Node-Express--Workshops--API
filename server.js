@@ -25,6 +25,7 @@ const bootcampRoutes = require('./routes/bootCamp')
 const workShopsRoutes = require('./routes/workShops')
 const authRoutes = require('./routes/auth')
 const usersRoutes = require('./routes/user')
+const reviewsRoutes = require('./routes/reviews')
 
 // Init Express
 const app = express()
@@ -73,6 +74,7 @@ app.use('/api/v1/bootcamps', bootcampRoutes)
 app.use('/api/v1/workshops', workShopsRoutes)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/users', usersRoutes)
+app.use('/api/v1/reviews', reviewsRoutes)
 
 // Error middleware
 app.use(errorMiddleware)

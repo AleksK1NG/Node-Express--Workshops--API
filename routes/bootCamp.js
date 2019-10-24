@@ -7,9 +7,11 @@ const BootCamp = require('../models/BootCamp')
 
 const bootcampController = require('../controllers/bootCampController')
 const workShopsRouter = require('./workShops')
+const reviewsRouter = require('./reviews')
 
 // redirect requests to workShopController
 router.use('/:bootcampId/workshops', workShopsRouter)
+router.use('/:bootcampId/reviews', reviewsRouter)
 
 router
   .route('/')
@@ -31,6 +33,8 @@ router
 
 router.route('/radius/:zipcode/:distance').get(bootcampController.getBootCampsByRadius)
 
-router.route('/:id/photo').put(auth.authMiddleware, auth.roleAuthMiddleware('admin', 'publisher'), bootcampController.uploadBootCampPhoto)
+router
+  .route('/:id/photo')
+  .put(auth.authMiddleware, auth.roleAuthMiddleware('admin', 'publisher'), bootcampController.uploadBootCampPhoto)
 
 module.exports = router
