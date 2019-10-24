@@ -16,7 +16,7 @@ exports.getUserById = asyncMiddleware(async (req, res, next) => {
 
   if (!user) return next(new ErrorResponse('Invalid credentials', 401))
 
-  res.status(200).json(user)
+  res.status(200).json({ data: user })
 })
 
 // @POST Create user  | Private, admin route
@@ -26,7 +26,7 @@ exports.createUser = asyncMiddleware(async (req, res, next) => {
 
   if (!user) return next(new ErrorResponse('Invalid credentials', 400))
 
-  res.status(201).json(user)
+  res.status(201).json({ data: user })
 })
 
 // @PUT Update user | Private, admin route
@@ -36,7 +36,7 @@ exports.updateUser = asyncMiddleware(async (req, res, next) => {
 
   if (!user) return next(new ErrorResponse('Invalid credentials', 400))
 
-  res.status(200).json(user)
+  res.status(200).json({ data: user })
 })
 
 // @DELETE Delete user | Private, admin route
@@ -44,5 +44,5 @@ exports.updateUser = asyncMiddleware(async (req, res, next) => {
 exports.deleteUser = asyncMiddleware(async (req, res, next) => {
   await User.findByIdAndDelete(req.params.id)
 
-  res.status(200).json({ message: 'User deleted' })
+  res.status(200).json({ message: 'User deleted', data: {} })
 })

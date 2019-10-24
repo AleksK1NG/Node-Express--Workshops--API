@@ -25,7 +25,7 @@ exports.getReviewById = asyncMiddleware(async (req, res, next) => {
 
   if (!review) return next(new ErrorsResponse(`Review with id ${req.params.id} not found `, 404))
 
-  res.status(200).json(review)
+  res.status(200).json({ data: review })
 })
 
 // @POST Create review | Private
@@ -41,7 +41,7 @@ exports.createReview = asyncMiddleware(async (req, res, next) => {
   // Crate review
   const review = await Review.create(req.body)
 
-  res.status(201).json(review)
+  res.status(201).json({ data: review })
 })
 
 // @PUT Update review | Private
@@ -57,7 +57,7 @@ exports.updateReview = asyncMiddleware(async (req, res, next) => {
 
   review = await Review.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
 
-  res.status(201).json(review)
+  res.status(200).json({ data: review })
 })
 
 // @DELETE Delete review | Private
@@ -73,5 +73,5 @@ exports.deleteReview = asyncMiddleware(async (req, res, next) => {
 
   await Review.remove()
 
-  res.status(201).json({ message: 'Review deleted' })
+  res.status(200).json({ message: 'Review deleted', data: {} })
 })
