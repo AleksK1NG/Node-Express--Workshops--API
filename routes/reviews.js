@@ -8,16 +8,17 @@ const reviewsController = require('../controllers/reviewsController')
 
 const router = express.Router({ mergeParams: true })
 
-router.route('/').get(
-  reqResMiddleware(Review, {
-    path: 'bootcamp',
-    select: 'name description'
-  }),
-  reviewsController.getAllReviews
-)
+router
+  .route('/')
+  .get(
+    reqResMiddleware(Review, {
+      path: 'bootcamp',
+      select: 'name description'
+    }),
+    reviewsController.getAllReviews
+  )
+  .post(auth.authMiddleware, auth.roleAuthMiddleware('user', 'admin'), reviewsController.createReview)
 
 router.route('/:id').get(reviewsController.getReviewById)
-
-
 
 module.exports = router
