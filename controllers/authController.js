@@ -154,3 +154,11 @@ exports.updatePassword = asyncMiddleware(async (req, res, next) => {
   // response with new user and token
   tokenResponse(user, 200, res)
 })
+
+// @GET Logout | Private
+// Route: /api/v1/auth/logout
+exports.logout = asyncMiddleware(async (req, res, next) => {
+  res.cookie('token', 'none', { expires: new Date(Date.now() + 10 * 1000), httpOnly: true })
+
+  res.status(200).json({ message: 'You are logged out', data: {} })
+})
