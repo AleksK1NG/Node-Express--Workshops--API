@@ -45,6 +45,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Sanitize data
+// https://blog.websecurify.com/2014/08/hacking-nodejs-and-mongodb.html
 app.use(mongoSanitize())
 
 // Set security headers
