@@ -43,3 +43,19 @@ exports.createReview = asyncMiddleware(async (req, res, next) => {
 
   res.status(201).json(review)
 })
+
+// @PUT Update review | Private
+// Route: /api/v1/reviews/:id
+exports.updateReview = asyncMiddleware(async (req, res, next) => {
+  let review = await Review.findById(req.params.id)
+
+  if (!review) return next(new ErrorsResponse(`Review with id ${req.params.id} not found `, 404))
+
+  // Check user is creator or admin
+  if (review.user.toString() !== req.user.id && req.user.role !== 'admin')
+    return next(new ErrorsResponse(`Not authorized`, 401))
+
+  review = await Review.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+
+  res.status(201).json(review)
+})

@@ -19,6 +19,9 @@ router
   )
   .post(auth.authMiddleware, auth.roleAuthMiddleware('user', 'admin'), reviewsController.createReview)
 
-router.route('/:id').get(reviewsController.getReviewById)
+router
+  .route('/:id')
+  .get(reviewsController.getReviewById)
+  .put(auth.authMiddleware, auth.roleAuthMiddleware('user', 'admin'), reviewsController.updateReview)
 
 module.exports = router
