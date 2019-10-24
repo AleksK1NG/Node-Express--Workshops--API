@@ -27,3 +27,19 @@ exports.getReviewById = asyncMiddleware(async (req, res, next) => {
 
   res.status(200).json(review)
 })
+
+// @POST Create review | Private
+// Route: /api/v1/bootcamps/:bootcampId/reviews
+exports.createReview = asyncMiddleware(async (req, res, next) => {
+  req.body.bootcamp = req.params.bootcampId
+  req.body.user = req.user.id
+
+  // Check for exists BootCamp
+  const bootCamp = await BootCamp.findById(req.params.bootcampId)
+  if (!bootCamp) return next(new ErrorsResponse(`BootCamp with id ${req.params.id} not found `, 404))
+
+  // Crate review
+  const review = await Review.create(req.body)
+
+  res.status(201).json(review)
+})
